@@ -9,19 +9,29 @@ def get_metadata_dict(metadata_file):
     return metadata
 
 # clean text 
-def clean_text(text):
-    # test this out
+def clean_text(text, json_abb=None):
+    # regex conditions
     REPLACE_BY_SPACE_RE = re.compile(r'[/(){}\[\]\|@,;]')
-    BAD_SYMBOLS_RE = re.compile(r'[^0-9a-z #+_]')
-    REM_GRADE = re.compile(r'\b[0-9]\w+')
+    REM_USC = re.compile(r'(_)')
+    SEP_CAPS = re.compile(r'(?<=[a-z])(?=[A-Z])')
+    BAD_SYMBOLS_RE = re.compile(r'[\W]')
+    #BAD_SYMBOLS_RE = re.compile(r'[^0-9a-z #+_]')
+    REM_GRADE = re.compile(r'(th.(grade|GRADE))')
     REPLACE_NUM_RMN = re.compile(r"([0-9]+)|(i[xv]|v?i{0,3})$")    
-    text = text.lower()
-    text = REM_GRADE.sub('', text)
+    text = REM_USC.sub(' ', text)
+    text = SEP_CAPS.sub(' ', text)
+    text = str.lower(text)
     text = REPLACE_NUM_RMN.sub('', text)
     text = REPLACE_BY_SPACE_RE.sub(' ', text)
-    text = BAD_SYMBOLS_RE.sub(' ', text) 
+    text = BAD_SYMBOLS_RE.sub(' ', text)
+    text = REM_GRADE.sub('', text) 
     text = ' '.join(word for word in text.split() if len(word)>1)
-    return text
+    if json_abb is not None:
+        abb_cleanup = {r'\b{}\b'.format(k):v for k, v in json_abb.items()}
+        text.replace(to_replace = d, regex=True)
+        return text
+    else:
+        return text
 
 def update_data(df, json_cadr=None, json_abb=None):
     if json_cadr is not None:
