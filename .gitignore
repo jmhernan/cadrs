@@ -9,3 +9,5 @@ output/
 .vscode
 settings.R
 python_env/
+client_secrets.json
+client_secret.json
