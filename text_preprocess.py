@@ -26,14 +26,14 @@ def clean_text(text, json_abb=None):
     text = BAD_SYMBOLS_RE.sub(' ', text)
     text = REM_GRADE.sub('', text) 
     text = ' '.join(word for word in text.split() if len(word)>1)
-    if json_abb is not None:
-        abb_cleanup = {r'\b{}\b'.format(k):v for k, v in json_abb.items()}
-        text.replace(to_replace = d, regex=True)
-        return text
-    else:
-        return text
+    return text
 
-def update_data(df, json_cadr=None, json_abb=None):
+def update_abb(text, json_abb):
+    abb_cleanup = {r'\b{}\b'.format(k):v for k, v in json_abb.items()}
+    abb_replace = text.replace(to_replace =abb_cleanup, regex=True)
+    return abb_replace
+
+def update_data(df, json_cadr=None, json_abb=None): #depricated use update abb cadrs coding happens in goolge docs 
     if json_cadr is not None:
         df['cadr']= df['Name'].map(json_cadr).fillna(df['cadr'])
         return df['cadr']

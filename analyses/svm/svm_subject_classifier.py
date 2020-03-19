@@ -34,7 +34,8 @@ path_root = os.path.join(project_root, "data") + '/'
 path_to_metadata = os.path.join(project_root, "metadata") + '/'
 path_to_cadrs = path_root + 'cadrs/'
 
-crs_cat =  pd.read_csv(os.path.join(path_to_cadrs,'training_data_updated.csv'), delimiter = ',')
+crs_cat =  pd.read_csv(os.path.join(path_to_cadrs,'training_data_updated__20200319.csv'), delimiter = ',')
+crs_abb = tp.get_metadata_dict(os.path.join(path_to_metadata, 'course_abb.json'))
 
 # look at class sizes 
 crs_cat["subject_class"].value_counts()
@@ -46,11 +47,7 @@ num_words = [len(words.split()) for words in text]
 max(num_words)
 
 text = text.apply(tp.clean_text)
-
-crs_abb = tp.get_metadata_dict(os.path.join(path_to_metadata, 'course_abb.json'))
-d = tp.update_data(crs_cat, json_abb=crs_abb) #fix the weird procedure
-
-text = text.replace(to_replace = d, regex=True)
+text = tp.update_abb(text, json_abb=crs_abb)
 
 # we might want to get rid of duplication after standardization
 dedup_fl = pd.concat([text,labels], axis = 1).drop_duplicates()
