@@ -34,7 +34,10 @@ path_root = os.path.join(project_root, "data") + '/'
 path_to_metadata = os.path.join(project_root, "metadata") + '/'
 path_to_cadrs = path_root + 'cadrs/'
 
-crs_cat =  pd.read_csv(os.path.join(path_to_cadrs,'training_data_updated__20200319.csv'), delimiter = ',')
+# need to test the following (edge cases)
+updated_cadrs = sorted(list(filter(lambda x: '.csv' in x, os.listdir(path_to_cadrs))))[-1]
+
+crs_cat =  pd.read_csv(os.path.join(path_to_cadrs,updated_cadrs), delimiter = ',')
 crs_abb = tp.get_metadata_dict(os.path.join(path_to_metadata, 'course_abb.json'))
 
 # look at class sizes 
