@@ -151,3 +151,5 @@ left join(
     group by ResearchID
     having flang_over > 0
 ) g on a.ResearchID = g.ResearchID;
+
+-- probably do the cadr flag on the views
