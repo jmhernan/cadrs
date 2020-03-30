@@ -20,19 +20,6 @@ def cadr_test():
     # 3. check numbers for categories against BERC manual codes
     #   a. overall %
     #   b. by school (if possible) or district 
-def clean_text(text):
-    # test this out
-    REPLACE_BY_SPACE_RE = re.compile(r'[/(){}\[\]\|@,;]')
-    BAD_SYMBOLS_RE = re.compile(r'[^0-9a-z #+_]')
-    REM_GRADE = re.compile(r'\b[0-9]\w+')
-    REPLACE_NUM_RMN = re.compile(r"([0-9]+)|(i[xv]|v?i{0,3})$")    
-    text = text.lower()
-    text = REM_GRADE.sub('', text)
-    text = REPLACE_NUM_RMN.sub('', text)
-    text = REPLACE_BY_SPACE_RE.sub(' ', text)
-    text = BAD_SYMBOLS_RE.sub(' ', text) 
-    text = ' '.join(word for word in text.split() if len(word)>1)
-    print(text)
 
 test_str =pd.Series([
     'BegELLReading',
@@ -60,31 +47,6 @@ test_str =pd.Series([
     'Portuguese III'
 ])
 
-test_str
+text = test_str.apply(tp.clean_text)
+text = tp.update_abb(text, json_abb=crs_abb)
 
-def clean_text(text, json_abb=None):
-    # regex conditions
-    REPLACE_BY_SPACE_RE = re.compile(r'[/(){}\[\]\|@,;]')
-    REM_USC = re.compile(r'(_)')
-    SEP_CAPS = re.compile(r'(?<=[a-z])(?=[A-Z])')
-    BAD_SYMBOLS_RE = re.compile(r'[\W]')
-    #BAD_SYMBOLS_RE = re.compile(r'[^0-9a-z #+_]')
-    REM_GRADE = re.compile(r'(th.(grade|GRADE))')
-    REPLACE_NUM_RMN = re.compile(r"([0-9]+)|(i[xv]|v?i{0,3})$")    
-    text = REM_USC.sub(' ', text)
-    text = SEP_CAPS.sub(' ', text)
-    text = str.lower(text)
-    text = REPLACE_NUM_RMN.sub('', text)
-    text = REPLACE_BY_SPACE_RE.sub(' ', text)
-    text = BAD_SYMBOLS_RE.sub(' ', text)
-    text = REM_GRADE.sub('', text) 
-    text = ' '.join(word for word in text.split() if len(word)>1)
-    return text
-
-
-def apply_abb(text, json_abb):
-    abb_cleanup = {r'\b{}\b'.format(k):v for k, v in json_abb.items()}
-    abb_replace = text.replace(to_replace =abb_cleanup, regex=True)
-    return abb_replace
-
-apply_abb(tt, json_abb=crs_abb)

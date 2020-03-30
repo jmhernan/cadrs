@@ -153,3 +153,66 @@ left join(
 ) g on a.ResearchID = g.ResearchID;
 
 -- probably do the cadr flag on the views
+select count(*)
+from english_cadr
+where eng_total_creds >= 4 or ell_sum_creds >= 4 or elc_sum_creds >= 4 or ap_cred = 1;
+
+select count(*)
+from math_cadr
+where math_total >= 3 or ap_cred = 1;
+
+select count(*)
+from sci_cadr
+where sci_total >=2;
+
+select count(*)
+from soc_cadr
+where soc_total >=3;
+
+select count(*)
+from flang_cadr
+where flang_total >= 2 or ap_cred = 1;
+
+-- CADR AGGREGATOR
+select distinct a.ResearchID, b.art_cadr_v, c.math_cadr_v, 
+d.eng_cadr_v, e.sci_cadr_v, f.soc_cadr_v, g.flang_cadr_v
+from cadr_pred a
+left join(
+select ResearchID, 
+COALESCE(art_total,0), COALESCE(math_over,0), COALESCE(soc_over,0), COALESCE(flang_over,0), COALESCE(sci_over,0), 
+(COALESCE(art_total,0) + COALESCE(math_over,0)) as art_m,
+(COALESCE(art_total,0) + COALESCE(soc_over,0)) as art_ss, 
+(COALESCE(art_total,0) + COALESCE(flang_over,0)) as art_fl,
+(COALESCE(art_total,0) + COALESCE(sci_over,0)) as art_sci,
+1 as art_cadr_v
+from art_cadr
+where art_total >=1 or art_m >= 1 or art_ss >= 1 or art_fl >= 1 or art_sci >= 1) b
+on a.ResearchID = b.ResearchID
+left join(
+select ResearchID, 1 as math_cadr_v
+from math_cadr
+where math_total >= 3 or ap_cred = 1) c
+on a.ResearchID = c.ResearchID
+left join(
+select ResearchID, 1 as eng_cadr_v
+from english_cadr
+where eng_total_creds >= 4 or ell_sum_creds >= 4 or elc_sum_creds >= 4 or ap_cred = 1) d
+on a.ResearchID = d.ResearchID
+left join(
+select ResearchID, 1 as sci_cadr_v
+from sci_cadr
+where sci_total >=2) e 
+on a.ResearchID = e.ResearchID
+left join(
+select ResearchID, 1 as soc_cadr_v
+from soc_cadr
+where soc_total >=3) f 
+on a.ResearchID = f.ResearchID
+left join(
+select ResearchID, 1 as flang_cadr_v
+from flang_cadr
+where flang_total >= 2 or ap_cred = 1) g
+on a.ResearchID=g.ResearchID; 
+--where c.math_cadr_v =1 and d.eng_cadr_v =1 and b.art_cadr_v = 1;
+
+
