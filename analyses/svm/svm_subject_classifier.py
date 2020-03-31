@@ -23,6 +23,13 @@ from sklearn.metrics import plot_confusion_matrix
 from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
 from sklearn.model_selection import GridSearchCV
 
+# fix for bug in venv on windows, probably starting from python 3.7.2: https://bugs.python.org/issue35797
+# this manifests as "PermissionError: [WinError 5] Access is denied" errors.
+# this is a workaround
+in_virtual_env = sys.prefix != sys.base_prefix
+if sys.platform == 'win32' and in_virtual_env and sys.version_info.major == 3 and sys.version_info.minor == 7:
+    import _winapi
+    sys.executable = _winapi.GetModuleFileName(0)
 
 this_file_path = os.path.abspath(__file__)
 project_root = os.path.split(os.path.split(os.path.split(this_file_path)[0])[0])[0]
@@ -42,6 +49,7 @@ crs_abb = tp.get_metadata_dict(os.path.join(path_to_metadata, 'course_abb.json')
 
 # look at class sizes 
 crs_cat["subject_class"].value_counts()
+
 # use the subject class as a "classifier"
 text =  crs_cat['Name']
 labels = crs_cat['subject_class']
@@ -58,7 +66,8 @@ dedup_fl['subject_class'].value_counts()
 
 text = dedup_fl['Name']
 labels = dedup_fl['subject_class']
-# beggin algorithm prep
+
+# begin algorithm prep
 # use statify parameter to ensure balance between classes when data is split 
 x_train, x_test, y_train, y_test = train_test_split(text, labels, stratify = labels ,test_size=0.2, random_state = 42)
 
