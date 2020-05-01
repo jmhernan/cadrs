@@ -1,23 +1,35 @@
-.headers on
-.mode csv
-.output output/course_2017_cohort.csv
+/* create student grade history records using enrollment cohorts */
+--.headers on
+--.mode csv
+--.output output/ghf_2017_cohort.csv
 
-DROP VIEW IF EXISTS cohort_17;
+DROP VIEW IF EXISTS ghf_cohort_17;
 
-CREATE VIEW cohort_17
+CREATE VIEW ghf_cohort_17
 AS
 SELECT *
-FROM courses 
-LEFT JOIN ( 
-    SELECT `State.Course.Code`, content_area
-    FROM DimCourse
-) dm ON printf("%05d", StateCourseCode)=dm.`State.Course.Code`
+FROM hsCourses 
 WHERE ResearchID IN (
 SELECT DISTINCT ResearchID
-FROM enrollment enr
-JOIN dimSchool sch
-    ON enr.SchoolCode = sch.SchoolCode
-    AND enr.ReportSchoolYear = sch.AcademicYear
-WHERE enr.GradeLevelSortOrder = 15 AND enr.GradReqYear = 2017 AND enr.dGraduate = 1 AND sch.dRoadMapRegionFlag = 1);
+FROM enr_2017cohort);
 
-select * from cohort_17;
+select count(*)
+from (
+select DISTINCT ResearchID
+from ghf_cohort_17);
+
+-- 2018 view
+DROP VIEW IF EXISTS ghf_cohort_18;
+
+CREATE VIEW ghf_cohort_18
+AS
+SELECT *
+FROM hsCourses 
+WHERE ResearchID IN (
+SELECT DISTINCT ResearchID
+FROM enr_2018cohort);
+
+select count(*)
+from (
+select DISTINCT ResearchID
+from ghf_cohort_18);
