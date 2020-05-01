@@ -19,7 +19,6 @@ from sklearn.model_selection import cross_val_score
 from sklearn.linear_model import SGDClassifier
 
 from sklearn.metrics import confusion_matrix
-from sklearn.metrics import plot_confusion_matrix
 from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
 from sklearn.model_selection import GridSearchCV
 
@@ -32,6 +31,7 @@ if sys.platform == 'win32' and in_virtual_env and sys.version_info.major == 3 an
     sys.executable = _winapi.GetModuleFileName(0)
 
 this_file_path = os.path.abspath(__file__)
+this_file_path = '/home/joseh/source/cadrs/analyses/svm/'
 project_root = os.path.split(os.path.split(os.path.split(this_file_path)[0])[0])[0]
 
 sys.path.append(project_root)
