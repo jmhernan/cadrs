@@ -4,6 +4,7 @@ import numpy as np
 import pandas as pd
 import os
 import re
+import sys
 from pathlib import Path
 
 from sklearn.pipeline import Pipeline
@@ -35,6 +36,7 @@ this_file_path = '/home/joseh/source/cadrs/analyses/svm/'
 project_root = os.path.split(os.path.split(os.path.split(this_file_path)[0])[0])[0]
 
 sys.path.append(project_root)
+
 import text_preprocess as tp
 
 path_root = os.path.join(project_root, "data") + '/'
@@ -103,6 +105,19 @@ print('accuracy %s' % accuracy_score(test_pred, y_test))
 print(classification_report(y_test, test_pred))
 print(confusion_matrix(y_test, test_pred))
 
+from sklearn.metrics import plot_confusion_matrix
+
+plot_confusion_matrix(gs_clf,x_test, y_test, xticks_rotation = 'vertical', normalize='true')
+
+## Look at the expected outputs 
+output = pd.DataFrame()
+output['text'] = x_test
+output['Expected Output'] = y_test
+output['Predicted Output'] = test_pred
+output.tail()
+
+
+
 ### SVM
 ### with hyper parameters
 
@@ -124,3 +139,41 @@ print(confusion_matrix(y_test, y_pred))
 # We need to have more class support for the elective and 
 # other categpries 
 # we can over sample or we can do manual labeling 
+
+# Read sqlite query results into a pandas DataFrame
+con = sqlite3.connect("data/DATABASE.sqlite")
+df = pd.read_sql_query("SELECT * from TABLE", con)
+
+# Verify that result of SQL query is stored in the dataframe
+print(df.head())
+
+con.close()
+
+crs_student.shape
+crs_student.columns
+
+crs_student['state_spec_course']=crs_student['state_spec_course'].fillna("")
+
+text_out =  crs_student['state_spec_course']
+num_words_2 = [len(words.split()) for words in text_out]
+max(num_words_2)
+
+text = text_out.apply(clean_text)
+text = text.replace(to_replace = d, regex=True)
+
+text.apply(lambda x: len(x.split(' '))).sum()
+
+text = text.astype(str).values.tolist()
+
+len(text)
+
+student_pred = gs_clf.predict(text)
+
+len(student_pred)
+
+pred_cols = pd.DataFrame(student_pred, columns = ['p_CADRS'])
+pred_cols.head
+
+combined_pred = crs_student.merge(pred_cols, left_index=True, right_index=True)
+combined_pred.head
+combined_pred.to_csv(os.path.join(path_root, 'svm_cadr_student_predictions_CV.csv'), encoding='utf-8', index=False)

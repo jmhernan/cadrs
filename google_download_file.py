@@ -11,12 +11,13 @@ import os
 from pathlib import Path
 
 this_file_path = os.path.abspath(__file__)
+# this_file_path = '/home/joseh/source/cadrs/'
 project_root = os.path.split(this_file_path)[0]
 
 path_root = os.path.join(project_root, "data") + '/'
 path_to_metadata = os.path.join(project_root, "metadata") + '/'
 path_to_cadrs = path_root + 'cadrs/'
-os.path.join(project_root, 'client_secret.json')
+
 import datetime
 
 def _getToday():
@@ -27,16 +28,20 @@ scope = ['https://spreadsheets.google.com/feeds','https://www.googleapis.com/aut
 creds = ServiceAccountCredentials.from_json_keyfile_name(os.path.join(project_root, 'client_secret.json'), scope)
 client = gspread.authorize(creds)
 
-sheet = client.open("training_data_updated").sheet1
+db_name = 'CCER_eScience_CADRS'
+data = client.open(db_name)
+data.worksheets()
+data_sheet = 'training_el_distributed'
 
-# Extract and print all of the values
-list_of_hashes = sheet.get_all_records()
-
+updated_data = data.worksheet(data_sheet)
+list_of_hashes = updated_data.get_all_records()
 headers = list_of_hashes.pop(0)
-
 df = pd.DataFrame(list_of_hashes, columns=headers)
 print(df.head())
 
 filename = "%s_%s.%s" % ("training_data_updated_", _getToday() ,"csv")
 
 df.to_csv(os.path.join(path_to_cadrs, filename), encoding='utf-8', index=False)
+
+
+
