@@ -42,6 +42,7 @@ import text_preprocess as tp
 path_root = os.path.join(project_root, "data") + '/'
 path_to_metadata = os.path.join(project_root, "metadata") + '/'
 path_to_cadrs = path_root + 'cadrs/'
+path_to_db = project_root + '/output/'
 
 # need to test the following (edge cases)
 updated_cadrs = sorted(list(filter(lambda x: '.csv' in x, os.listdir(path_to_cadrs))))[-1]
@@ -116,8 +117,6 @@ output['Expected Output'] = y_test
 output['Predicted Output'] = test_pred
 output.tail()
 
-
-
 ### SVM
 ### with hyper parameters
 
@@ -141,31 +140,27 @@ print(confusion_matrix(y_test, y_pred))
 # we can over sample or we can do manual labeling 
 
 # Read sqlite query results into a pandas DataFrame
-con = sqlite3.connect("data/DATABASE.sqlite")
-df = pd.read_sql_query("SELECT * from TABLE", con)
+import sqlite3
 
-# Verify that result of SQL query is stored in the dataframe
-print(df.head())
-
+db = path_to_db + 'ccerCadrDB.db'
+con = sqlite3.connect(db)
+crs_student = pd.read_sql_query("SELECT * from ghf_tukwila17", con)
+crs_student.shape
 con.close()
 
 crs_student.shape
 crs_student.columns
 
-crs_student['state_spec_course']=crs_student['state_spec_course'].fillna("")
+crs_student['CourseTitle'] = crs_student['CourseTitle'].fillna("")
+crs_student['StateCourseName'] = crs_student['StateCourseName'].fillna("")
 
-text_out =  crs_student['state_spec_course']
+
+text_out =  crs_student['CourseTitle']
 num_words_2 = [len(words.split()) for words in text_out]
 max(num_words_2)
 
-text = text_out.apply(clean_text)
-text = text.replace(to_replace = d, regex=True)
-
-text.apply(lambda x: len(x.split(' '))).sum()
-
-text = text.astype(str).values.tolist()
-
-len(text)
+text = text_out.apply(tp.clean_text)
+text = tp.update_abb(text, json_abb=crs_abb)
 
 student_pred = gs_clf.predict(text)
 
@@ -175,5 +170,35 @@ pred_cols = pd.DataFrame(student_pred, columns = ['p_CADRS'])
 pred_cols.head
 
 combined_pred = crs_student.merge(pred_cols, left_index=True, right_index=True)
-combined_pred.head
-combined_pred.to_csv(os.path.join(path_root, 'svm_cadr_student_predictions_CV.csv'), encoding='utf-8', index=False)
+
+combined_pred.to_csv(os.path.join(path_root, 'svm_cadr_student_predictions_tukwila.csv'), encoding='utf-8', index=False)
+###
+con = sqlite3.connect(db)
+crs_student = pd.read_sql_query("SELECT * from ghf_cohort_17", con)
+crs_student.shape
+con.close()
+
+crs_student.shape
+crs_student.columns
+
+crs_student['CourseTitle'] = crs_student['CourseTitle'].fillna("")
+crs_student['StateCourseName'] = crs_student['StateCourseName'].fillna("")
+
+
+text_out =  crs_student['CourseTitle']
+num_words_2 = [len(words.split()) for words in text_out]
+max(num_words_2)
+
+text = text_out.apply(tp.clean_text)
+text = tp.update_abb(text, json_abb=crs_abb)
+
+student_pred = gs_clf.predict(text)
+
+len(student_pred)
+
+pred_cols = pd.DataFrame(student_pred, columns = ['p_CADRS'])
+pred_cols.head
+
+combined_pred = crs_student.merge(pred_cols, left_index=True, right_index=True)
+
+combined_pred.to_csv(os.path.join(path_root, 'svm_cadr_student_predictions.csv'), encoding='utf-8', index=False)
