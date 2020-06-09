@@ -258,8 +258,6 @@ left join (
 DROP VIEW IF EXISTS agg_cadr_tuk_test;
 CREATE VIEW agg_cadr_tuk_test
 AS
-
-
 select
 CASE 
     WHEN a.eng_cadr_v ISNULL THEN b.eng_total_creds ELSE a.eng_cadr_v
@@ -271,6 +269,64 @@ left join (
     from english_cadr_tuk
     where eng_total_creds < 4 
 ) b 
-on a.ResearchID = b.ResearchID
-limit 10;
+on a.ResearchID = b.ResearchID;
 
+-- Check folks that have courses all throughout their HS years 
+DROP VIEW IF EXISTS  Tukwila_test_agg;
+CREATE VIEW Tukwila_test_agg
+AS
+SELECT a.*, 
+        CASE WHEN b.DistinctGradeLevelCount = 4 THEN 1 ELSE 0 END AS CompleteHSRecords 
+FROM agg_cadr_tuk a
+LEFT JOIN(
+    SELECT
+		ResearchID,
+		COUNT(DISTINCT GradeLevelWhenCourseTaken) AS DistinctGradeLevelCount
+	FROM cadr_pred_tuk
+	WHERE 
+		GradeLevelWhenCourseTaken IN (9, 10, 11, 12)
+	GROUP BY ResearchID
+) b
+on a.ResearchID = b.ResearchID;
+
+-- out of 170 students that have any HS grades in SGH, 137 have complete transcripts
+SELECT
+	SUM(CompleteHSRecords) AS CompleteHSRecords,
+	COUNT(*) 
+FROM Tukwila_test_agg;
+
+-- More robust
+DROP VIEW IF EXISTS  min_credits;
+CREATE VIEW min_credits
+AS
+SELECT  ResearchID,
+		GradeLevelWhenCourseTaken,
+		SUM(CreditsAttempted) AS CreditsAttemptedTotal,
+		CASE WHEN SUM(CreditsAttempted) >= 6.0 THEN 1 ELSE 0 END AS HasMinCredits
+	FROM cadr_pred_tuk
+	WHERE 
+		GradeLevelWhenCourseTaken IN (9, 10, 11, 12)
+	GROUP BY
+		ResearchID,
+		GradeLevelWhenCourseTaken;
+
+DROP VIEW IF EXISTS  Tukwila_test_agg_robust;
+CREATE VIEW Tukwila_test_agg_robust
+AS
+SELECT  a.*,
+        b.CompleteHSRecords
+FROM agg_cadr_tuk a
+LEFT JOIN(
+    SELECT  ResearchID,
+            CASE WHEN(COUNT(DISTINCT GradeLevelWhenCourseTaken) = 4 AND 
+            COUNT(DISTINCT GradeLevelWhenCourseTaken) = SUM(HasMinCredits)) THEN 1 ELSE 0 END AS CompleteHSRecords
+    FROM min_credits
+    GROUP BY ResearchID
+) b
+on a.ResearchID = b.ResearchID;
+
+-- out of 170 students that have any HS grades in SGH, 63 have complete transcripts when counting minimum credits
+SELECT
+	SUM(CompleteHSRecords) AS CompleteHSRecords,
+	COUNT(*) 
+FROM Tukwila_test_agg_robust;

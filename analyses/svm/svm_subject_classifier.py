@@ -202,3 +202,6 @@ pred_cols.head
 combined_pred = crs_student.merge(pred_cols, left_index=True, right_index=True)
 
 combined_pred.to_csv(os.path.join(path_root, 'svm_cadr_student_predictions.csv'), encoding='utf-8', index=False)
+
+
+gs_clf.predict(['english langiage arts 4'])
