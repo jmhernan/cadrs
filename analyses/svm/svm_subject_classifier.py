@@ -32,7 +32,7 @@ if sys.platform == 'win32' and in_virtual_env and sys.version_info.major == 3 an
     sys.executable = _winapi.GetModuleFileName(0)
 
 this_file_path = os.path.abspath(__file__)
-this_file_path = '/home/joseh/source/cadrs/analyses/svm/'
+#this_file_path = '/home/joseh/source/cadrs/analyses/svm/'
 project_root = os.path.split(os.path.split(os.path.split(this_file_path)[0])[0])[0]
 
 sys.path.append(project_root)
@@ -201,7 +201,7 @@ pred_cols.head
 
 combined_pred = crs_student.merge(pred_cols, left_index=True, right_index=True)
 
-combined_pred.to_csv(os.path.join(path_root, 'svm_cadr_student_predictions.csv'), encoding='utf-8', index=False)
+combined_pred.to_csv(os.path.join(path_root, 'svm_cadr_student_predictions_06092020.csv'), encoding='utf-8', index=False)
 
 
-gs_clf.predict(['english langiage arts 4'])
+gs_clf.predict(['civics'])

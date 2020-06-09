@@ -11,11 +11,11 @@ Science
 Folreign Language
 */
 .mode csv
-.import /Users/josehernandez/Documents/eScience/projects/cadrs/data/svm_cadr_student_predictions_tukwila.csv cadr_pred_tuk
+.import /Users/josehernandez/Documents/eScience/projects/cadrs/data/svm_cadr_student_predictions_tukwila.csv cadr_pred_tuk_test
 .schema cadr_pred_tuk
 
 select count(distinct ResearchID)
-from cadr_pred_tuk;
+from cadr_pred_tuk_test;
 
 select ResearchID, p_CADRS, count(*) as num
 from cadr_pred_tuk
@@ -277,7 +277,7 @@ CREATE VIEW Tukwila_test_agg
 AS
 SELECT a.*, 
         CASE WHEN b.DistinctGradeLevelCount = 4 THEN 1 ELSE 0 END AS CompleteHSRecords 
-FROM agg_cadr_tuk a
+FROM cadr_tuk_val a
 LEFT JOIN(
     SELECT
 		ResearchID,
@@ -314,12 +314,12 @@ DROP VIEW IF EXISTS  Tukwila_test_agg_robust;
 CREATE VIEW Tukwila_test_agg_robust
 AS
 SELECT  a.*,
-        b.CompleteHSRecords
-FROM agg_cadr_tuk a
+        b.CompleteHSRecordsRobust
+FROM Tukwila_test_agg a
 LEFT JOIN(
     SELECT  ResearchID,
             CASE WHEN(COUNT(DISTINCT GradeLevelWhenCourseTaken) = 4 AND 
-            COUNT(DISTINCT GradeLevelWhenCourseTaken) = SUM(HasMinCredits)) THEN 1 ELSE 0 END AS CompleteHSRecords
+            COUNT(DISTINCT GradeLevelWhenCourseTaken) = SUM(HasMinCredits)) THEN 1 ELSE 0 END AS CompleteHSRecordsRobust
     FROM min_credits
     GROUP BY ResearchID
 ) b
@@ -327,6 +327,6 @@ on a.ResearchID = b.ResearchID;
 
 -- out of 170 students that have any HS grades in SGH, 63 have complete transcripts when counting minimum credits
 SELECT
-	SUM(CompleteHSRecords) AS CompleteHSRecords,
+	SUM(CompleteHSRecordsRobust) AS CompleteHSRecordsRobust,
 	COUNT(*) 
 FROM Tukwila_test_agg_robust;
