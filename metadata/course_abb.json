@@ -65,7 +65,7 @@
   "cte":"career and technical education",
   "hist":"history",
   "h":"honors",
-  "coe":"collection of evidence",
+  "coe":"collection of evidence test preperation",
   "sci":"science",
   "env":"enviromental",
   "edu":"education",
@@ -102,5 +102,7 @@
   "orchest":"orchestra",
   "lg":"language arts",
   "applicarts":"applied arts",
-  "chsastrmy": "college astronomy"
+  "chsastrmy": "college astronomy",
+  "cham": "chamber",
+  "con":"concert"
 }

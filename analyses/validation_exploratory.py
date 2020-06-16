@@ -15,7 +15,7 @@ project_root = os.path.split(os.path.split(this_file_path)[0])[0]
 sys.path.append(project_root)
 
 import text_preprocess as tp
-
+ 
 path_root = os.path.join(project_root, "data") + '/'
 path_to_metadata = os.path.join(project_root, "metadata") + '/'
 path_to_cadrs = path_root + 'cadrs/'
@@ -23,7 +23,7 @@ path_to_db = project_root + '/'
 
 db = path_to_db + 'card_db.db'
 con = sqlite3.connect(db)
-df_cadr = pd.read_sql_query("SELECT * from cadr_tuk_val", con)
+df_cadr = pd.read_sql_query("SELECT * from Tukwila_test_agg_robust", con)
 df_cadr.shape
 
 query_txt = '''SELECT 
@@ -42,5 +42,8 @@ con.close()
 df_cadr.columns
 df_course.columns
 
+# df_cadr_sub = df_cadr[(df_cadr['CompleteHSRecords']== 1)]
+
+df_cadr.to_csv(os.path.join(path_root, 'validation_log_06102020.csv'), encoding='utf-8', index=False)
 
 
