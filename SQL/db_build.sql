@@ -20,8 +20,3 @@
 .mode csv
 .import /home/joseh/data/cadr_update/postSecDems.csv postSecDems
 .schema postSecDems
-
-
-
-
-

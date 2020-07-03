@@ -44,6 +44,12 @@ df_course.columns
 
 # df_cadr_sub = df_cadr[(df_cadr['CompleteHSRecords']== 1)]
 
-df_cadr.to_csv(os.path.join(path_root, 'validation_log_06102020.csv'), encoding='utf-8', index=False)
+df_cadr.to_csv(os.path.join(path_root, 'prediction_validation_log_06162020.csv'), encoding='utf-8', index=False)
+
+# Output validation 
+
+out_val =  pd.read_csv(os.path.join(path_root,'svm_cadr_output_val_06162020.csv'), delimiter = ',')
+
+
 
 
