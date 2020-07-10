@@ -71,7 +71,7 @@ labels = dedup_fl['subject_class']
 
 # begin algorithm prep
 # use statify parameter to ensure balance between classes when data is split 
-x_train, x_test, y_train, y_test = train_test_split(text, labels, stratify = labels ,test_size=0.2, random_state = 42)
+x_train, x_test, y_train, y_test = train_test_split(text, labels, stratify = labels ,test_size=0.1, random_state = 42)
 
 #look at class sizes for training and test sets
 y_train.value_counts()

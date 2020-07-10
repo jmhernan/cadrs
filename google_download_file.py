@@ -39,7 +39,7 @@ headers = list_of_hashes.pop(0)
 df = pd.DataFrame(list_of_hashes, columns=headers)
 print(df.tail())
 
-filename = "%s_%s.%s" % ("training_data_updated_", _getToday() ,"csv")
+filename = "%s_%s.%s" % ("training_data_updated", _getToday() ,"csv")
 
 df.to_csv(os.path.join(path_to_cadrs, filename), encoding='utf-8', index=False)
 
