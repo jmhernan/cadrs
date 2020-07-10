@@ -98,7 +98,7 @@ text_tok = pad_sequences(sequences, maxlen=max_seq_len+1)
 text_tok.shape
 np.mean(text_tok > 0)
 
-from keras.utils import to_categorical
+from tensorflow.keras.utils import to_categorical
 
 labels = to_categorical(np.asarray(labels))
 
