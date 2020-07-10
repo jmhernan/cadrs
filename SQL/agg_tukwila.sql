@@ -11,11 +11,14 @@ Science
 Folreign Language
 */
 .mode csv
-.import /Users/josehernandez/Documents/eScience/projects/cadrs/data/svm_cadr_student_predictions_tukwila.csv cadr_pred_tuk_test
+.import /Users/josehernandez/Documents/eScience/projects/cadrs/data/svm_cadr_student_predictions_tukwila.csv cadr_pred_tuk
 .schema cadr_pred_tuk
 
 select count(distinct ResearchID)
-from cadr_pred_tuk_test;
+from cadr_pred_tuk;
+
+select count(*)
+from cadr_pred_tuk;
 
 select ResearchID, p_CADRS, count(*) as num
 from cadr_pred_tuk
@@ -254,6 +257,10 @@ left join (
     sci_cadr_v = 1 and flang_cadr_v = 1 and art_cadr_v = 1 and soc_cadr_v = 1
 ) c on a.ResearchID = c.ResearchID;
 
+
+select count(*)
+from cadr_tuk_val
+where nsc_4yr = 1;
 -- Test Aggregator with credits needed
 DROP VIEW IF EXISTS agg_cadr_tuk_test;
 CREATE VIEW agg_cadr_tuk_test
@@ -330,3 +337,10 @@ SELECT
 	SUM(CompleteHSRecordsRobust) AS CompleteHSRecordsRobust,
 	COUNT(*) 
 FROM Tukwila_test_agg_robust;
+
+SELECT 
+    SUM(CADR_eligible) AS CADR_eligibility,
+    SUM(nsc_4yr) AS nsc_eligibility,
+    COUNT(*)
+FROM Tukwila_test_agg_robust
+WHERE CompleteHSRecords = 1;

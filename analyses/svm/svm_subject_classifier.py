@@ -46,7 +46,6 @@ path_to_db = project_root + '/output/'
 
 # need to test the following (edge cases)
 updated_cadrs = sorted(list(filter(lambda x: '.csv' in x, os.listdir(path_to_cadrs))))[-1]
-
 crs_cat =  pd.read_csv(os.path.join(path_to_cadrs,updated_cadrs), delimiter = ',')
 crs_abb = tp.get_metadata_dict(os.path.join(path_to_metadata, 'course_abb.json'))
 
@@ -110,13 +109,15 @@ from sklearn.metrics import plot_confusion_matrix
 
 plot_confusion_matrix(gs_clf,x_test, y_test, xticks_rotation = 'vertical', normalize='true')
 
+gs_clf.predict(['spanish literature'])
+
 ## Look at the expected outputs 
 output = pd.DataFrame()
 output['text'] = x_test
 output['Expected Output'] = y_test
 output['Predicted Output'] = test_pred
 output.tail()
-
+output.to_csv(os.path.join(path_root, 'svm_cadr_output_val_06242020.csv'), encoding='utf-8', index=False)
 ### SVM
 ### with hyper parameters
 
@@ -134,6 +135,8 @@ y_pred = sgd.predict(x_test)
 print('accuracy %s' % accuracy_score(y_pred, y_test))
 print(classification_report(y_test, y_pred))
 print(confusion_matrix(y_test, y_pred))
+
+
 #####
 # We need to have more class support for the elective and 
 # other categpries 
@@ -171,7 +174,8 @@ pred_cols.head
 
 combined_pred = crs_student.merge(pred_cols, left_index=True, right_index=True)
 
-combined_pred.to_csv(os.path.join(path_root, 'svm_cadr_student_predictions_tukwila.csv'), encoding='utf-8', index=False)
+combined_pred.to_csv(os.path.join(path_root, 'svm_cadr_student_predictions_tukwila_06162020.csv'), encoding='utf-8', index=False)
+
 ###
 con = sqlite3.connect(db)
 crs_student = pd.read_sql_query("SELECT * from ghf_cohort_17", con)
@@ -201,7 +205,4 @@ pred_cols.head
 
 combined_pred = crs_student.merge(pred_cols, left_index=True, right_index=True)
 
-combined_pred.to_csv(os.path.join(path_root, 'svm_cadr_student_predictions_06092020.csv'), encoding='utf-8', index=False)
-
-
-gs_clf.predict(['civics'])
+combined_pred.to_csv(os.path.join(path_root, 'svm_cadr_student_predictions_06162020.csv'), encoding='utf-8', index=False)
