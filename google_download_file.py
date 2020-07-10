@@ -31,7 +31,7 @@ client = gspread.authorize(creds)
 db_name = 'CCER_eScience_CADRS'
 data = client.open(db_name)
 data.worksheets()
-data_sheet = 'training_06212020'
+data_sheet = 'training_06242020'
 
 updated_data = data.worksheet(data_sheet)
 list_of_hashes = updated_data.get_all_records()
@@ -39,7 +39,7 @@ headers = list_of_hashes.pop(0)
 df = pd.DataFrame(list_of_hashes, columns=headers)
 print(df.tail())
 
-filename = "%s_%s.%s" % ("training_data_updated", _getToday() ,"csv")
+filename = "%s_%s.%s" % ("training_data_updated_", _getToday() ,"csv")
 
 df.to_csv(os.path.join(path_to_cadrs, filename), encoding='utf-8', index=False)
 
