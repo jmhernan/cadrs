@@ -17,6 +17,7 @@ import text_preprocess as tp
 # Added non normalized courses to dict. Preprosess step needs to run.
 test_courses = tp.get_metadata_dict(os.path.join(path_to_metadata, 'test_courses.json'))
 
+# Need to add preprocessing step for cleaning 
 # Need to load saved model and run predictions
 pred_courses = gs_clf.predict(test_courses.keys())
 

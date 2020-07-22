@@ -1,3 +1,4 @@
+# Try with pre-trained embeddings as a function of the model being built
 import os
 import re
 import random
@@ -83,7 +84,7 @@ model = tf.keras.Sequential([
     tf.keras.layers.Embedding(vocab_size, embedding_dim),
     # LSTM layer
     tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(embedding_dim, return_sequences=True)),
-    tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(32)),
+    tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(64)),
     # Dense layer
     tf.keras.layers.Dense(embedding_dim, activation='relu'),
     # output layer
@@ -99,7 +100,7 @@ model.compile(
     metrics=['accuracy']
 )
 
-num_epochs = 50
+num_epochs = 30
 history = model.fit(x_train, y_train, 
     epochs=num_epochs, validation_data=(x_val, y_val), 
     verbose=2)

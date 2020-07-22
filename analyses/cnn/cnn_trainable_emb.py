@@ -194,4 +194,3 @@ output_string = s.format(
             grid_result_cv.best_params_)
 
 print(output_string)
-

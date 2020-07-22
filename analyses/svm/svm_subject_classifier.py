@@ -165,7 +165,7 @@ max(num_words_2)
 text = text_out.apply(tp.clean_text)
 text = tp.update_abb(text, json_abb=crs_abb)
 
-student_pred = gs_clf.predict(text)
+student_pred = gs_clf.predict(p_text)
 
 len(student_pred)
 

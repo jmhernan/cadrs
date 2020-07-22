@@ -15,3 +15,19 @@ def get_class_weights(y, smooth_factor=0):
     majority = max(counter.values())
 
     return {cls: float(majority / count) for cls, count in counter.items()}
+
+# Create function that finds the number of records and the average weight for each value of the chosen column
+def get_distinct_values(column_name):
+  sql = """
+SELECT
+  {0},
+  COUNT(1) AS num_babies,
+  AVG(weight_pounds) AS avg_wt
+FROM
+  publicdata.samples.natality
+WHERE
+  year > 2000
+GROUP BY
+  {0}
+  """.format(column_name)
+  return bigquery.Client().query(sql).to_dataframe()
