@@ -36,8 +36,6 @@ path_to_plot = path_root
 path_to_save = path_root
 
 use_pretrained = True
-name_save = 'cadrs_cnn_titles_cadrs.hdf5'
-
 validation_split = 0.2
 
 crs_cat =  pd.read_csv(os.path.join(path_to_cadrs,'cadrs_training_rsd.csv'), delimiter = ',')

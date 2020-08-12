@@ -62,36 +62,37 @@ max(num_words)
 text = text.apply(tp.clean_text)
 text = tp.update_abb(text, json_abb=crs_abb)
 
+tp.get_top_n_words(text)
 # we might want to get rid of duplication after standardization
-dedup_fl = pd.concat([text,labels], axis = 1).drop_duplicates()
-dedup_fl['subject_class'].value_counts()
-
-text = dedup_fl['Name']
-labels = dedup_fl['subject_class']
+# dedup_fl = pd.concat([text,labels], axis = 1).drop_duplicates()
+# dedup_fl['subject_class'].value_counts()
+#
+# text = dedup_fl['Name']
+# labels = dedup_fl['subject_class']
 
 # begin algorithm prep
 # use statify parameter to ensure balance between classes when data is split 
-x_train, x_test, y_train, y_test = train_test_split(text, labels, stratify = labels ,test_size=0.1, random_state = 42)
+x_train, x_test, y_train, y_test = train_test_split(text, labels, stratify = labels ,test_size=0.20, random_state = 42)
 
 #look at class sizes for training and test sets
 y_train.value_counts()
 y_test.value_counts()
 
 ###### Pipeline
-sgd = Pipeline([('vect', CountVectorizer()),
+sgd = Pipeline([('vect', CountVectorizer(ngram_range=(1, 2))),
                 ('tfidf', TfidfTransformer()),
                 ('clf', SGDClassifier(loss='hinge', penalty='l2', random_state=42, max_iter=5, tol=None)),
                ])
 
 parameters = {
     'vect__analyzer': ['word','char'],
-    'vect__ngram_range': [(1,1), (1,2)],
+    #'vect__ngram_range': [(1,1), (1,2)],
     'tfidf__use_idf': (True, False),
     'clf__alpha': (1e-2, 1e-3,1e-1),
 }
 
-gs_clf = GridSearchCV(sgd, parameters, cv=5, iid=False, n_jobs=-1)
-gs_clf.fit(x_train, y_train)
+gs_clf = GridSearchCV(sgd, parameters, cv=10, iid=False, n_jobs=-1)
+gs_clf.fit(text, labels)
 
 gs_clf.best_score_
 for param_name in sorted(parameters.keys()):
@@ -109,7 +110,7 @@ from sklearn.metrics import plot_confusion_matrix
 
 plot_confusion_matrix(gs_clf,x_test, y_test, xticks_rotation = 'vertical', normalize='true')
 
-gs_clf.predict(['spanish literature'])
+gs_clf.predict(['english'])
 
 ## Look at the expected outputs 
 output = pd.DataFrame()
@@ -117,7 +118,7 @@ output['text'] = x_test
 output['Expected Output'] = y_test
 output['Predicted Output'] = test_pred
 output.tail()
-output.to_csv(os.path.join(path_root, 'svm_cadr_output_val_06242020.csv'), encoding='utf-8', index=False)
+output.to_csv(os.path.join(path_root, 'svm_cadr_output_val_07242020.csv'), encoding='utf-8', index=False)
 ### SVM
 ### with hyper parameters
 
@@ -165,7 +166,7 @@ max(num_words_2)
 text = text_out.apply(tp.clean_text)
 text = tp.update_abb(text, json_abb=crs_abb)
 
-student_pred = gs_clf.predict(p_text)
+student_pred = gs_clf.predict(text)
 
 len(student_pred)
 
@@ -174,7 +175,7 @@ pred_cols.head
 
 combined_pred = crs_student.merge(pred_cols, left_index=True, right_index=True)
 
-combined_pred.to_csv(os.path.join(path_root, 'svm_cadr_student_predictions_tukwila_06162020.csv'), encoding='utf-8', index=False)
+combined_pred.to_csv(os.path.join(path_root, 'svm_cadr_student_predictions_tukwila_07222020.csv'), encoding='utf-8', index=False)
 
 ###
 con = sqlite3.connect(db)
@@ -205,4 +206,4 @@ pred_cols.head
 
 combined_pred = crs_student.merge(pred_cols, left_index=True, right_index=True)
 
-combined_pred.to_csv(os.path.join(path_root, 'svm_cadr_student_predictions_06162020.csv'), encoding='utf-8', index=False)
+combined_pred.to_csv(os.path.join(path_root, 'svm_cadr_student_predictions_07222020.csv'), encoding='utf-8', index=False)

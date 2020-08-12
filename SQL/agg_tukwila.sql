@@ -10,8 +10,9 @@ Math
 Science
 Folreign Language
 */
+DROP TABLE IF EXISTS cadr_pred_tuk;
 .mode csv
-.import /Users/josehernandez/Documents/eScience/projects/cadrs/data/svm_cadr_student_predictions_tukwila.csv cadr_pred_tuk
+.import /Users/josehernandez/Documents/eScience/projects/cadrs/data/svm_cadr_student_predictions_tukwila_07222020.csv cadr_pred_tuk
 .schema cadr_pred_tuk
 
 select count(distinct ResearchID)

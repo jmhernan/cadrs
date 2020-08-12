@@ -1,6 +1,20 @@
+"""
+Functions specific to preprocess raw extract data from GoogleSheets CCER Course
+ CADR codes.
+"""
 import re
 import json
 import pandas as pd
+from sklearn.feature_extraction.text import CountVectorizer
+
+# regex conditions for text cleanup
+REPLACE_BY_SPACE_RE = re.compile(r'[/(){}\[\]\|@,;]')
+REM_USC = re.compile(r'(_)')
+SEP_CAPS = re.compile(r'(?<=[a-z])(?=[A-Z])')
+BAD_SYMBOLS_RE = re.compile(r'[\W]')
+REM_GRADE = re.compile(r'(th.(grade|GRADE))')
+REM_CTE = re.compile(r'(\bCTE\b|\dCTE)')
+REPLACE_NUM_RMN = re.compile(r"([0-9]+)|(i[xv]|v?i{0,3})$")
 
 # handle json
 def get_metadata_dict(metadata_file):
@@ -9,16 +23,7 @@ def get_metadata_dict(metadata_file):
     return metadata
 
 # clean text 
-def clean_text(text, json_abb=None):
-    # regex conditions
-    REPLACE_BY_SPACE_RE = re.compile(r'[/(){}\[\]\|@,;]')
-    REM_USC = re.compile(r'(_)')
-    SEP_CAPS = re.compile(r'(?<=[a-z])(?=[A-Z])')
-    BAD_SYMBOLS_RE = re.compile(r'[\W]')
-    #BAD_SYMBOLS_RE = re.compile(r'[^0-9a-z #+_]')
-    REM_GRADE = re.compile(r'(th.(grade|GRADE))')
-    REM_CTE = re.compile(r'(\bCTE\b|\dCTE)')
-    REPLACE_NUM_RMN = re.compile(r"([0-9]+)|(i[xv]|v?i{0,3})$")    
+def clean_text(text):    
     text = REM_USC.sub(' ', text)
     text = REM_CTE.sub('', text)
     text = SEP_CAPS.sub(' ', text)
@@ -54,3 +59,14 @@ def multi_class_df(df, cadr_methods):
     df.iloc[my_query_index, 8] = "non_cadr"
     print(pd.crosstab(df.subject_class, df.cadr).sort_values(1, ascending=False))
     return df
+
+def get_top_n_words(corpus, n=None):
+    """
+    List the top n words in a vocabulary according to occurrence in a text corpus.
+    """
+    vec = CountVectorizer().fit(corpus)
+    bag_of_words = vec.transform(corpus)
+    sum_words = bag_of_words.sum(axis=0) 
+    words_freq = [(word, sum_words[0, idx]) for word, idx in vec.vocabulary_.items()]
+    words_freq = sorted(words_freq, key = lambda x: x[1], reverse=True)
+    return words_freq[:n]
