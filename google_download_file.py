@@ -31,7 +31,7 @@ client = gspread.authorize(creds)
 db_name = 'CCER_eScience_CADRS'
 data = client.open(db_name)
 data.worksheets()
-data_sheet = 'training_06242020'
+data_sheet = 'training_08172020'
 
 updated_data = data.worksheet(data_sheet)
 list_of_hashes = updated_data.get_all_records()

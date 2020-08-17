@@ -175,7 +175,7 @@ pred_cols.head
 
 combined_pred = crs_student.merge(pred_cols, left_index=True, right_index=True)
 
-combined_pred.to_csv(os.path.join(path_root, 'svm_cadr_student_predictions_tukwila_07222020.csv'), encoding='utf-8', index=False)
+combined_pred.to_csv(os.path.join(path_root, 'svm_cadr_student_predictions_tukwila_202008.csv'), encoding='utf-8', index=False)
 
 ###
 con = sqlite3.connect(db)
@@ -206,4 +206,4 @@ pred_cols.head
 
 combined_pred = crs_student.merge(pred_cols, left_index=True, right_index=True)
 
-combined_pred.to_csv(os.path.join(path_root, 'svm_cadr_student_predictions_07222020.csv'), encoding='utf-8', index=False)
+combined_pred.to_csv(os.path.join(path_root, 'svm_cadr_student_predictions_20200817.csv'), encoding='utf-8', index=False)

@@ -26,6 +26,7 @@ con = sqlite3.connect(db)
 df_cadr = pd.read_sql_query("SELECT * from Tukwila_test_agg_robust", con)
 df_cadr.shape
 
+# Get all the predictions from Tukwila
 query_txt = '''SELECT 
             ResearchID,ReportSchoolYear,DistrictName,SchoolName,TermEndDate,
             Term,GradeLevelWhenCourseTaken,CourseID,CourseTitle,
@@ -44,12 +45,49 @@ df_course.columns
 
 # df_cadr_sub = df_cadr[(df_cadr['CompleteHSRecords']== 1)]
 
-df_cadr.to_csv(os.path.join(path_root, 'prediction_validation_log_06162020.csv'), encoding='utf-8', index=False)
+df_cadr.to_csv(os.path.join(path_root, 'prediction_validation_log_082020.csv'), encoding='utf-8', index=False)
 
 # Output validation 
 
-out_val =  pd.read_csv(os.path.join(path_root,'svm_cadr_output_val_06162020.csv'), delimiter = ',')
+out_val =  pd.read_csv(os.path.join(path_root,'svm_cadr_output_val_082020.csv'), delimiter = ',')
 
+# Look at Renton 
+db = path_to_db + 'card_db.db'
+con = sqlite3.connect(db)
+
+cursor = con.cursor()
+cursor.execute("SELECT name FROM sqlite_master WHERE type='view';")
+print(cursor.fetchall())
+
+renton_result_query = '''
+SELECT * 
+FROM cadr_district_table
+WHERE DistrictCode = 17403
+'''
+
+df_renton_cadr = pd.read_sql_query(renton_result_query, con)
+df_renton_cadr.shape
+
+# Get all the predictions from Renton
+query_txt = '''SELECT 
+            DistrictCode, ResearchID,ReportSchoolYear,DistrictName,SchoolName,TermEndDate,
+            Term,GradeLevelWhenCourseTaken,CourseID,CourseTitle,
+            p_CADRS,CreditsEarned,StateCourseCode,
+            StateCourseName,ContentAreaCode,ContentAreaName,dSchoolYear 
+            FROM cadr_pred
+            WHERE DistrictCode = 17403
+            '''
+
+
+df_course_renton = pd.read_sql_query(query_txt, con)
+df_course_renton.shape
+
+con.close()
+
+# Save Log file to explore
+df_renton_cadr.to_csv(os.path.join(path_root, 'prediction_validation_log_renton_08172020.csv'), encoding='utf-8', index=False)
+
+# Exploratory 
 # Explore universe of course names in courses from 2016-present 
 db = path_to_db + 'card_db.db'
 con = sqlite3.connect(db)
