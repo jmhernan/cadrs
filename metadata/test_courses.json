@@ -37,5 +37,6 @@
     "READ/LA 9-12": ["oo_sample", "el_cadr"],
     "IB Film HL": ["oo_sample", "fpa_cadr"],
     "PHY/EA SCI (H)": ["oo_sample", "sci_cadr"],
-    "HLTH SCI": ["oo_sample", "non_cadr"]
+    "HLTH SCI": ["oo_sample", "non_cadr"],
+    "LANG ARTS": ["oo_sample", "el_cadr"]
 }

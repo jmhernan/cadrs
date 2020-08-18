@@ -148,7 +148,7 @@ import sqlite3
 
 db = path_to_db + 'ccerCadrDB.db'
 con = sqlite3.connect(db)
-crs_student = pd.read_sql_query("SELECT * from ghf_tukwila17", con)
+crs_student = pd.read_sql_query("SELECT * from ghf_renton", con)
 crs_student.shape
 con.close()
 
@@ -175,7 +175,7 @@ pred_cols.head
 
 combined_pred = crs_student.merge(pred_cols, left_index=True, right_index=True)
 
-combined_pred.to_csv(os.path.join(path_root, 'svm_cadr_student_predictions_tukwila_202008.csv'), encoding='utf-8', index=False)
+combined_pred.to_csv(os.path.join(path_root, 'svm_cadr_student_predictions_renton_20200817.csv'), encoding='utf-8', index=False)
 
 ###
 con = sqlite3.connect(db)
