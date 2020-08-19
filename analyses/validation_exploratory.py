@@ -23,7 +23,7 @@ path_to_db = project_root + '/'
 
 db = path_to_db + 'card_db.db'
 con = sqlite3.connect(db)
-df_cadr = pd.read_sql_query("SELECT * from Tukwila_test_agg_robust", con)
+df_cadr = pd.read_sql_query("SELECT * from agg_cadr_tuk", con)
 df_cadr.shape
 
 # Get all the predictions from Tukwila
@@ -45,7 +45,7 @@ df_course.columns
 
 # df_cadr_sub = df_cadr[(df_cadr['CompleteHSRecords']== 1)]
 
-df_cadr.to_csv(os.path.join(path_root, 'prediction_validation_log_082020.csv'), encoding='utf-8', index=False)
+df_cadr.to_csv(os.path.join(path_root, 'prediction_validation_log_08202017_renton.csv'), encoding='utf-8', index=False)
 
 # Output validation 
 

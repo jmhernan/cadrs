@@ -52,3 +52,15 @@ FROM hsCourses
 WHERE ResearchID IN (
 SELECT DISTINCT ResearchID
 FROM enr_2018cohort_tukwila);
+
+DROP VIEW IF EXISTS ghf_renton;
+CREATE VIEW ghf_renton
+AS
+SELECT *
+FROM hsCourses 
+WHERE ResearchID IN (
+SELECT DISTINCT ResearchID
+FROM enr_2017cohort_renton);
+
+SELECT COUNT(distinct ResearchID)
+FROM ghf_renton;

@@ -38,5 +38,9 @@
     "IB Film HL": ["oo_sample", "fpa_cadr"],
     "PHY/EA SCI (H)": ["oo_sample", "sci_cadr"],
     "HLTH SCI": ["oo_sample", "non_cadr"],
-    "LANG ARTS": ["oo_sample", "el_cadr"]
+    "LANG ARTS": ["oo_sample", "el_cadr"],
+    "CoreEngl10_S1": ["oo_sample", "el_cadr"],
+    "FREN": ["oo_sample", "fll_cadr"],
+    "HUMANITIES 1": ["oo_sample", "el_cadr"],
+    "HUMANITIES 2": ["oo_sample", "el_cadr"]
 }

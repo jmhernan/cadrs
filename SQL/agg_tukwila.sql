@@ -17,7 +17,7 @@ DROP TABLE IF EXISTS cadr_pred_tuk;
 
 DROP TABLE IF EXISTS cadr_pred_tuk;
 .mode csv
-.import /Users/josehernandez/Documents/eScience/projects/cadrs/data/svm_cadr_student_predictions_tukwila_202008.csv cadr_pred_tuk
+.import /Users/josehernandez/Documents/eScience/projects/cadrs/data/svm_cadr_student_predictions_renton_20200817.csv cadr_pred_tuk
 .schema cadr_pred_tuk
 
 select count(distinct ResearchID)

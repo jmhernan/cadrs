@@ -12,12 +12,12 @@ Folreign Language
 */
 DROP TABLE IF EXISTS cadr_pred;
 .mode csv
-.import /home/joseh/source/cadrs/data/svm_cadr_student_predictions_20200815.csv cadr_pred
+.import /home/joseh/source/cadrs/data/svm_cadr_student_predictions_20200817.csv cadr_pred
 .schema cadr_pred
 
 DROP TABLE IF EXISTS cadr_pred;
 .mode csv
-.import /Users/josehernandez/Documents/eScience/projects/cadrs/data/svm_cadr_student_predictions_20200815.csv cadr_pred
+.import /Users/josehernandez/Documents/eScience/projects/cadrs/data/svm_cadr_student_predictions_20200817.csv cadr_pred
 .schema cadr_pred
 
 select count(distinct ResearchID)
@@ -387,17 +387,7 @@ INNER JOIN(
 ) b on a.DistrictCode = b.DistrictCode
 GROUP BY a.DistrictCode;
 
--- Using the new table 
-SELECT count(*) 
-FROM cadr_test_agg_robust;
-
-SELECT count(*)
-FROM enr_2017cohort;
-
-SELECT * 
-FROM agg_cadr
-LIMIT 10;
-
+-- Using the new table (NEW PROCEDURE)
 DROP VIEW IF EXISTS cadr_val;
 CREATE VIEW cadr_val
 AS
